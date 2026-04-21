@@ -1,6 +1,8 @@
+"use client";
+
 import { EllipsisVertical, ShoppingCart, UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ModeToggle from "./mode-toggle";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import {
   Sheet,
@@ -9,6 +11,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+
+const ModeToggle = dynamic(() => import("./mode-toggle"), { ssr: false });
 
 const Menu = () => {
   return (
