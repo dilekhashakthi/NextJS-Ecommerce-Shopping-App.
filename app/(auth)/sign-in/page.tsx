@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Logo from "@/public/images/logo.svg";
 import { APP_NAME } from "@/lib/constants";
+import CredentialsSignInForm from "./credintials-signin-form";
 
 export const metadata: Metadata = {
   title: "Sign In",
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 
 const SignInPage = () => {
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-md mx-auto my-auto">
       <Card>
         <CardHeader className="space-y-4">
           <Link href="/" className="flex-center">
@@ -29,7 +30,7 @@ const SignInPage = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-              {/* Sign in form goes here */}
+              <CredentialsSignInForm />
         </CardContent>
       </Card>
     </div>
