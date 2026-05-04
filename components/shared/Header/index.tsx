@@ -3,6 +3,7 @@ import Link from "next/link";
 import { APP_NAME } from "@/lib/constants";
 import LOGO from "@/public/images/logo.svg"
 import Menu from "./menu";
+import UserButton from "./user-button";
 
 const Header = () => {
   return (
@@ -22,7 +23,7 @@ const Header = () => {
             </span>
           </Link>
         </div>
-        <Menu />
+        <Menu userButton={<UserButton />} />
       </div>
     </header>
   );

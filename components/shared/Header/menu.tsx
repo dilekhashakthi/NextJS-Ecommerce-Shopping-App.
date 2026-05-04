@@ -11,11 +11,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import UserButton from "./user-button";
+import { ReactNode } from "react";
 
 const ModeToggle = dynamic(() => import("./mode-toggle"), { ssr: false });
 
-const Menu = () => {
+const Menu = ({ userButton }: { userButton: ReactNode }) => {
   return (
     <div className="flex justify-end gap-3">
       <nav className="hidden md:flex w-full max-w-xs gap-1">
@@ -25,7 +25,7 @@ const Menu = () => {
             <ShoppingCart /> Cart
           </Link>
         </Button>
-        <UserButton />
+        {userButton}
       </nav>
       <nav className="md:hidden">
         <Sheet>
@@ -40,7 +40,7 @@ const Menu = () => {
                 <ShoppingCart /> Cart
               </Link>
             </Button>
-            <UserButton />
+            {userButton}
             <SheetDescription></SheetDescription>
           </SheetContent>
         </Sheet>
