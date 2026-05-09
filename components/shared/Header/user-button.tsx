@@ -13,6 +13,7 @@ import { UserIcon } from "lucide-react";
 
 const UserButton = async () => {
   const session = await auth();
+  console.log("SESSION:", JSON.stringify(session, null, 2));
 
   if (!session) {
     return (
@@ -33,7 +34,7 @@ const UserButton = async () => {
           <div className="flex items-center">
             <Button
               variant="ghost"
-              className="relative w-8 h-8 rounded-full ml-2 flex items-center justify-center bg-gray-200"
+              className="relative w-8 h-8 rounded-full ml-2 flex items-center justify-center bg-gray-200 dark:bg-gray-700 text-black dark:text-white font-bold text-sm"
             >
               {firstInitial}
             </Button>

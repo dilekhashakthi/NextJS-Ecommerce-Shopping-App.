@@ -4,9 +4,16 @@ import { formatNumberWithDecimal } from "./utils";
 const currency = z
   .string()
   .refine(
-    (value) => /e/.test(formatNumberWithDecimal(Number(value))),
+    (value) => /^\d+(\.\d{2})$/.test(formatNumberWithDecimal(Number(value))),
     "Price must have exactly two decimal places",
   );
+
+/*
+The regex /^\d+(\.\d{2})$/ means:
+ 1. ^\d+ — starts with one or more digits
+ 2. (\.\d{2}) — followed by exactly a dot and 2 decimal digits
+ 3. $ — end of string
+*/
 
 // Schema for inserting products
 export const insertProductSchema = z.object({

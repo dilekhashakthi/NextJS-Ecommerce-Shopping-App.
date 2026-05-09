@@ -115,6 +115,7 @@ export async function addItemToCart(data: CartItem) {
       };
     }
   } catch (error) {
+    console.error("addItemToCart error:", error);
     return {
       success: false,
       message: formatError(error),
@@ -135,7 +136,7 @@ export async function getMyCart() {
 
   // Get user cart from database
   const cart = await prisma.cart.findFirst({
-    where: userId ? { userId: userId } : { sessionCartId: "sessionCartId" },
+    where: userId ? { userId: userId } : { sessionCartId: sessionCartId },
   });
 
   if (!cart) return undefined;
