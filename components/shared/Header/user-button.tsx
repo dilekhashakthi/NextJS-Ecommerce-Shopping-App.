@@ -13,7 +13,6 @@ import { UserIcon } from "lucide-react";
 
 const UserButton = async () => {
   const session = await auth();
-  console.log("SESSION:", JSON.stringify(session, null, 2));
 
   if (!session) {
     return (
