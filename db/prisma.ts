@@ -1,29 +1,46 @@
-import { neonConfig } from '@neondatabase/serverless';
-import { PrismaNeon } from '@prisma/adapter-neon';
-import { PrismaClient } from '@/lib/generated/prisma/client';
-import ws from 'ws';
+import { neonConfig } from "@neondatabase/serverless";
+import { PrismaNeon } from "@prisma/adapter-neon";
+import { PrismaClient } from "@/lib/generated/prisma/client";
 
 // Sets up WebSocket connections, which enables Neon to use WebSocket communication.
-neonConfig.webSocketConstructor = ws;
+// Only applies in Node.js runtime (not edge), to avoid WebSocket errors in server components.
+if (typeof WebSocket === "undefined") {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  neonConfig.webSocketConstructor = require("ws");
+}
+
 const connectionString = `${process.env.DATABASE_URL}`;
 
 // Instantiates the Prisma adapter using the Neon connection string to handle the connection between Prisma and Neon.
 const adapter = new PrismaNeon({ connectionString });
 
-// Extends the PrismaClient with a custom result transformer to convert the price and rating fields to strings.
-export const prisma = new PrismaClient({ adapter }).$extends({
-  result: {
-    product: {
-      price: {
-        compute(product) {
-          return product.price.toString();
+// Stores the Prisma client on the global object to prevent multiple instances during hot reload in development.
+const globalForPrisma = globalThis as unknown as {
+  prisma: ReturnType<typeof createPrismaClient>;
+};
+
+// Creates a new Prisma client with the Neon adapter and extends it with custom result transformers.
+function createPrismaClient() {
+  return new PrismaClient({ adapter }).$extends({
+    result: {
+      product: {
+        // Extends the PrismaClient with a custom result transformer to convert the price and rating fields to strings.
+        price: {
+          compute(product) {
+            return product.price.toString();
+          },
         },
-      },
-      rating: {
-        compute(product) {
-          return product.rating.toString();
+        rating: {
+          compute(product) {
+            return product.rating.toString();
+          },
         },
       },
     },
-  },
-});
+  });
+}
+
+export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+
+// Only cache the Prisma instance globally in development to avoid exhausting database connections.
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
