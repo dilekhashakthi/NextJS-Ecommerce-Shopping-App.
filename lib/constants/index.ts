@@ -2,9 +2,11 @@ export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || "ProStore";
 export const APP_DESCRIPTION =
   process.env.NEXT_PUBLIC_APP_DESCRIPTION ||
   "A modern E commerce platform built with Next.js and TypeScript";
-export const SERVER_URL = process.env.NEXT_PUBLIC_SEVER_URL || "https://localhost:3000"
+export const SERVER_URL =
+  process.env.NEXT_PUBLIC_SEVER_URL || "https://localhost:3000";
 
-export const LATEST_PRODUCT_LIMIT = Number(process.env.LATEST_PRODUCT_LIMIT) || 4
+export const LATEST_PRODUCT_LIMIT =
+  Number(process.env.LATEST_PRODUCT_LIMIT) || 4;
 
 export const signInDefaultValues = {
   email: "",
@@ -19,9 +21,15 @@ export const signUpDefaultValues = {
 };
 
 export const shippingAddressDefaultValues = {
-  fullName: '',
+  fullName: "Jone Deo",
   streetAddress: "123 Main st",
   city: "Anytown",
-  postalCode: '12345',
-  country: 'USA'
-}
+  postalCode: "12345",
+  country: "USA",
+};
+
+export const PEYMENT_METHODS = process.env.PEYMENT_METHODS
+  ? process.env.PEYMENT_METHODS.split(", ")
+  : ["PayPal", "Stripe", "CashOnDelivery"];
+export const DEFAULT_PAYMENT_METHOD =
+  process.env.DEFAULT_PAYMENT_METHOD || "Paypal";
