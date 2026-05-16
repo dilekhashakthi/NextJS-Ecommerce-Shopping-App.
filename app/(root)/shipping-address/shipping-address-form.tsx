@@ -4,7 +4,12 @@ import { shippingAddressSchema } from "@/lib/validators";
 import { ShippingAddress } from "@/types";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
+import {
+  Controller,
+  ControllerRenderProps,
+  SubmitHandler,
+  useForm,
+} from "react-hook-form";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import * as z from "zod";
@@ -19,6 +24,7 @@ import {
 } from "@/components/ui/field";
 import { ArrowRight, Loader } from "lucide-react";
 import { shippingAddressDefaultValues } from "@/lib/constants";
+import { updateUserAddress } from "@/lib/actions/user.actions";
 
 type ShippingAddressSchema = z.infer<typeof shippingAddressSchema>;
 
@@ -28,17 +34,21 @@ const ShippingAddressForm = ({ address }: { address: ShippingAddress }) => {
 
   const form = useForm<ShippingAddressSchema>({
     resolver: zodResolver(shippingAddressSchema),
-    defaultValues: address || shippingAddressDefaultValues
+    defaultValues: address || shippingAddressDefaultValues,
   });
 
-  const onSubmit = (values: ShippingAddressSchema) => {
+  const onSubmit: SubmitHandler<z.infer<typeof shippingAddressSchema>> = async (
+    values,
+  ) => {
     startTransition(async () => {
-      try {
-        toast.success("Shipping address saved");
-        router.push("/payment-method");
-      } catch {
-        toast.error("Something went wrong. Please try again.");
+      const res = await updateUserAddress(values);
+
+      if (!res.success) {
+        toast.error(res.message);
+        return;
       }
+
+      router.push("/payment-method");
     });
   };
 
