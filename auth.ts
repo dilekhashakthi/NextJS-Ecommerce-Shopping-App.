@@ -4,18 +4,12 @@ import { prisma } from "@/db/prisma";
 import CredentialProvider from "next-auth/providers/credentials";
 import { compareSync } from "bcrypt-ts-edge";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { authConfig } from "@/auth.config";
 
 export const config = {
-  pages: {
-    signIn: "/sign-in",
-    error: "/sign-in",
-  },
-  session: {
-    strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-  },
-  secret: process.env.NEXTAUTH_SECRET,
+  // Spread the edge-compatible base config so pages, session, and secret
+  // are defined in a single place (auth.config.ts).
+  ...authConfig,
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialProvider({
