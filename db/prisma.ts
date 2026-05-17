@@ -17,11 +17,13 @@ const adapter = new PrismaNeon({ connectionString });
 // Stores the Prisma client on the global object to prevent multiple instances during hot reload in development.
 const globalForPrisma = globalThis as unknown as {
   prisma: ReturnType<typeof createPrismaClient>;
+  prismaBase: PrismaClient;
 };
 
 // Creates a new Prisma client with the Neon adapter and extends it with custom result transformers.
 function createPrismaClient() {
-  return new PrismaClient({ adapter }).$extends({
+  const base = new PrismaClient({ adapter });
+  const extended = base.$extends({
     result: {
       product: {
         // Extends the PrismaClient with a custom result transformer to convert the price and rating fields to strings.
@@ -38,9 +40,19 @@ function createPrismaClient() {
       },
     },
   });
+  return { base, extended };
 }
 
-export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+const clients = globalForPrisma.prisma ?? createPrismaClient();
+
+// The extended client — use for most queries (has custom price/rating transformers)
+export const prisma = clients.extended;
+
+// The base client — use inside $transaction callbacks where extended types break
+export const prismaBase = clients.base;
 
 // Only cache the Prisma instance globally in development to avoid exhausting database connections.
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = clients;
+  globalForPrisma.prismaBase = clients.base;
+}
