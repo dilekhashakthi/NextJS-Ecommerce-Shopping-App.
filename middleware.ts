@@ -16,16 +16,25 @@ export async function middleware(request: NextRequest) {
     /\/user\/(.*)/,
     /\/order\/(.*)/,
     /\/admin/,
-  ]
+  ];
 
   // Get pathname from the req URL object
-  const {pathname} = request.nextUrl;
+  const { pathname } = request.nextUrl;
 
   // Get the session
   const session = await auth();
 
   // Check if user is not authenticated and accessing a protected path
-  if (!session && protectedPaths.some((path) => path.test(pathname))) return false
+  if (!session && protectedPaths.some((path) => path.test(pathname))) {
+    return NextResponse.redirect(
+      new URL(
+        `/sign-in?callbackUrl=${encodeURIComponent(
+          pathname + request.nextUrl.search,
+        )}`,
+        request.url,
+      ),
+    );
+  }
 
   // Check for session cart cookie
   if (!request.cookies.get("sessionCartId")) {

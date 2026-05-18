@@ -17,13 +17,14 @@ export type Cart = z.infer<typeof insertCardSchema>;
 export type CartItem = z.infer<typeof cartItemSchema>;
 export type ShippingAddress = z.infer<typeof shippingAddressSchema>;
 export type OrderItem = z.infer<typeof insertOrderItemSchema>;
-export type Order = z.infer<typeof insertOrderSchema> & {
+export type Order = Omit<z.infer<typeof insertOrderSchema>, "userId"> & {
   id: string;
-  createdAt: Date;
+  userId: string | null;
+  createdAt: Date | null;
   isPaid: boolean;
   paidAt: Date | null;
   isDelivered: boolean;
   deliveredAt: Date | null;
   orderitems: OrderItem[];
-  user: {name: string; email: string}
+  user: { name: string | null; email: string | null } | null;
 };
