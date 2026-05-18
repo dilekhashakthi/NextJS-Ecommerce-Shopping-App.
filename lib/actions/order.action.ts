@@ -90,7 +90,7 @@ export async function createOrder() {
     return {
       success: true,
       message: "Order created",
-      redirectTo: `/order${insertedOrderId}`,
+      redirectTo: `/order/${insertedOrderId}`,
     };
   } catch (error) {
     if (isRedirectError(error)) throw error;
@@ -110,5 +110,11 @@ export async function getOrderById(orderId: string) {
     },
   });
 
-  return convertToPlainObject(data)
+  if (!data) return null;
+
+  return convertToPlainObject({
+    ...data,
+    isDelivered: data.isDeliverd,
+    deliveredAt: data.deliverdAt,
+  });
 }
