@@ -222,6 +222,9 @@ async function update0rderToPaid({
     where: {
       id: orderId,
     },
+    include: {
+      orderitems: true,
+    },
   });
 
   if (!order) throw new Error("Order not found");

@@ -25,6 +25,19 @@ import {
 } from "@/lib/actions/order.action";
 import { toast } from "sonner";
 
+const PrintLoadingState = () => {
+  const [{ isPending, isRejected }] = usePayPalScriptReducer();
+  let status = "";
+
+  if (isPending) {
+    status = "Loading PayPal ... ";
+  } else if (isRejected) {
+    status = "Error Loading PayPal";
+  }
+
+  return status;
+};
+
 const OrderDetailsTable = ({
   order,
   paypalClientId,
@@ -46,19 +59,6 @@ const OrderDetailsTable = ({
     paidAt,
     deliveredAt,
   } = order;
-
-  const PrintLoadingState = () => {
-    const [{ isPending, isRejected }] = usePayPalScriptReducer();
-    let status = "";
-
-    if (isPending) {
-      status = "Loading PayPal ... ";
-    } else if (isRejected) {
-      status = "Error Loading PayPal";
-    }
-
-    return status;
-  };
 
   const handleCreatePayPalOrder = async () => {
     const res = await createPaypalOrder(order.id);
