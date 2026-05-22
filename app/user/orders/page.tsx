@@ -1,21 +1,29 @@
-import {Metadata} from "next"
-import { getMyOrders } from "@/lib/actions/order.action"
-import { formatCurrency, formatDateTime, formatId } from "@/lib/utils"
-import Link from "next/link"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Metadata } from "next";
+import { getMyOrders } from "@/lib/actions/order.action";
+import { formatCurrency, formatDateTime, formatId } from "@/lib/utils";
+import Link from "next/link";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import Pagination from "@/components/shared/pagination";
 
 export const metadata: Metadata = {
-  title: "My Orders"
-}
+  title: "My Orders",
+};
 
 const OrdersPage = async (props: {
-  searchParams: Promise<{page: string}>
+  searchParams: Promise<{ page: string }>;
 }) => {
-  const {page} = await props.searchParams;
+  const { page } = await props.searchParams;
 
   const orders = await getMyOrders({
-    page: Number(page) || 1
-  })
+    page: Number(page) || 1,
+  });
   return (
     <div className="space-y-2">
       <h2 className="h2-bold">Orders</h2>
@@ -36,7 +44,9 @@ const OrdersPage = async (props: {
               <TableRow key={order.id}>
                 <TableCell>{formatId(order.id)}</TableCell>
                 <TableCell>
-                  {order.createdAt ? formatDateTime(order.createdAt as Date).dateTime : "-"}
+                  {order.createdAt
+                    ? formatDateTime(order.createdAt as Date).dateTime
+                    : "-"}
                 </TableCell>
                 <TableCell>{formatCurrency(order.totalPrice)}</TableCell>
                 <TableCell>
@@ -58,9 +68,17 @@ const OrdersPage = async (props: {
             ))}
           </TableBody>
         </Table>
+        {
+          orders.totalPages > 1 && (
+            <Pagination
+            page={Number(page) || 1}
+            totalPages={orders?.totalPages}
+            />
+          )
+        }
       </div>
     </div>
   );
-}
+};
 
-export default OrdersPage
+export default OrdersPage;
