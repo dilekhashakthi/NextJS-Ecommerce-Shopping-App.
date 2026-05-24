@@ -90,7 +90,6 @@ const ProductForm = ({
     defaultValue: [],
   });
 
-
   return (
     <FormProvider {...form}>
       <Card>
@@ -279,25 +278,28 @@ const ProductForm = ({
                     <Label htmlFor="images" className="pb-1.5">
                       Images
                     </Label>
-                    {images.map((image: string) => (
-                      <Image
-                        key={image}
-                        src={image}
-                        alt="Product image"
-                        className="w-20 h-20 object-cover object-center rounded-sm"
-                        width={100}
-                        height={100}
+                    <div className="border w-full h-auto rounded-sm p-3">
+                      {images.map((image: string) => (
+                        <Image
+                          key={image}
+                          src={image}
+                          alt="Product image"
+                          className="w-20 h-20 object-cover object-center rounded-sm"
+                          width={100}
+                          height={100}
+                        />
+                      ))}
+                      <UploadButton<OurFileRouter, "imageUploader">
+                        endpoint="imageUploader"
+                        onClientUploadComplete={(res: { url: string }[]) => {
+                          form.setValue("images", [...images, res[0].url]);
+                        }}
+                        onUploadError={(error: Error) => {
+                          toast.error(`ERROR! ${error.message}`);
+                        }}
                       />
-                    ))}
-                    <UploadButton <OurFileRouter, "imageUploader">
-                      endpoint="imageUploader"
-                      onClientUploadComplete={(res: { url: string }[]) => {
-                        form.setValue("images", [...images, res[0].url]);
-                      }}
-                      onUploadError={(error: Error) => {
-                        toast.error(`ERROR! ${error.message}`);
-                      }}
-                    />
+                    </div>
+
                     {fieldState.error && (
                       <p className="text-sm text-destructive mt-1">
                         {fieldState.error.message}
