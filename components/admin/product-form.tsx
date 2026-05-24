@@ -22,6 +22,8 @@ import { Textarea } from "../ui/textarea";
 import { createProduct, updateProduct } from "@/lib/actions/product.actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { UploadButton } from "@uploadthing/react";
+import Image from "next/image";
 
 type ProductFormValues =
   | z.infer<typeof insertProductSchema>
@@ -79,6 +81,8 @@ const ProductForm = ({
       router.push("/admin/products");
     }
   };
+
+  const images = form.watch("images");
 
   return (
     <FormProvider {...form}>
@@ -256,6 +260,45 @@ const ProductForm = ({
             </div>
             <div className="upload-flex flex flex-col md:flex-row gap-5">
               {/* Images */}
+              <Controller
+                control={form.control}
+                name="images"
+                render={({
+                  fieldState,
+                }: {
+                  fieldState: { error?: { message?: string } };
+                }) => (
+                  <div className="w-full">
+                    <Label htmlFor="images" className="pb-1.5">
+                      Images
+                    </Label>
+                    {images.map((image: string) => (
+                      <Image
+                        key={image}
+                        src={image}
+                        alt="Product image"
+                        className="w-20 h-20 object-cover object-center rounded-sm"
+                        width={100}
+                        height={100}
+                      />
+                    ))}
+                    <UploadButton
+                      endpoint="imageUploader"
+                      onClientUploadComplete={(res: { url: string }[]) => {
+                        form.setValue("images", [...images, res[0].url]);
+                      }}
+                      onUploadError={(error:Error) => {
+                        toast.error(`ERROR! ${error.message}`)
+                      }}
+                    />
+                    {fieldState.error && (
+                      <p className="text-sm text-destructive mt-1">
+                        {fieldState.error.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
             </div>
             <div className="upload-field">{/* isFeatured */}</div>
             <div>
