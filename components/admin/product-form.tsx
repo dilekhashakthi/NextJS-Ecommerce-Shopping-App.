@@ -4,9 +4,20 @@ import { productDefaultValues } from "@/lib/constants";
 import { insertProductSchema, updateProductSchema } from "@/lib/validators";
 import { Product } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormProvider, useForm, type Resolver } from "react-hook-form";
+import {
+  Controller,
+  ControllerRenderProps,
+  FormProvider,
+  useForm,
+  type Resolver,
+} from "react-hook-form";
 import z from "zod";
-import { Card } from "../ui/card";
+import { Card, CardContent } from "../ui/card";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Button } from "../ui/button";
+import Slugify from "slugify";
+import { Textarea } from "../ui/textarea";
 
 type ProductFormValues =
   | z.infer<typeof insertProductSchema>
@@ -31,26 +42,218 @@ const ProductForm = ({
   return (
     <FormProvider {...form}>
       <Card>
-        <form className="space-y-8">
-          <div className="flex flex-col md:flex-row gap-5">
-            {/* Name */}
-            {/* Slug */}
-          </div>
-          <div className="flex flex-col md:flex-row gap-5">
-            {/* Category */}
-            {/* Brand */}
-          </div>
-          <div className="flex flex-col md:flex-row gap-5">
-            {/* Price */}
-            {/* Stock */}
-          </div>
-          <div className="upload-flex flex flex-col md:flex-row gap-5">
-            {/* Images */}
-          </div>
-          <div className="upload-field">{/* isFeatured */}</div>
-          <div>{/* Description */}</div>
-          <div>{/* Submit */}</div>
-        </form>
+        <CardContent>
+          <form className="space-y-8">
+            <div className="flex flex-col md:flex-row gap-5">
+              {/* Name */}
+              <Controller
+                control={form.control}
+                name="name"
+                render={({
+                  field,
+                  fieldState,
+                }: {
+                  field: ControllerRenderProps<ProductFormValues, "name">;
+                  fieldState: { error?: { message?: string } };
+                }) => (
+                  <div className="w-full">
+                    <Label htmlFor="name" className="pb-1.5">
+                      Name
+                    </Label>
+                    <Input placeholder="Enter product name" {...field} />
+                    {fieldState.error && (
+                      <p className="text-sm text-destructive mt-1">
+                        {fieldState.error.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
+              {/* Slug */}
+              <Controller
+                control={form.control}
+                name="slug"
+                render={({
+                  field,
+                  fieldState,
+                }: {
+                  field: ControllerRenderProps<ProductFormValues, "slug">;
+                  fieldState: { error?: { message?: string } };
+                }) => (
+                  <div className="w-full">
+                    <Label htmlFor="slug" className="pb-1.5">
+                      Slug
+                    </Label>
+                    <div className="relative">
+                      <Input placeholder="Enter slug" {...field} />
+                      <Button
+                        type="button"
+                        className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-1 mt-2"
+                        onClick={() => {
+                          const nameValue = form.getValues("name");
+                          form.setValue(
+                            "slug",
+                            Slugify(nameValue, { lower: true }),
+                          );
+                        }}
+                      >
+                        Generate
+                      </Button>
+                    </div>
+                    {fieldState.error && (
+                      <p className="text-sm text-destructive mt-1">
+                        {fieldState.error.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
+            </div>
+            <div className="flex flex-col md:flex-row gap-5">
+              {/* Category */}
+              <Controller
+                control={form.control}
+                name="category"
+                render={({
+                  field,
+                  fieldState,
+                }: {
+                  field: ControllerRenderProps<ProductFormValues, "category">;
+                  fieldState: { error?: { message?: string } };
+                }) => (
+                  <div className="w-full">
+                    <Label htmlFor="categoty" className="pb-1.5">
+                      Category
+                    </Label>
+                    <Input placeholder="Enter category name" {...field} />
+                    {fieldState.error && (
+                      <p className="text-sm text-destructive mt-1">
+                        {fieldState.error.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
+              {/* Brand */}
+              <Controller
+                control={form.control}
+                name="brand"
+                render={({
+                  field,
+                  fieldState,
+                }: {
+                  field: ControllerRenderProps<ProductFormValues, "brand">;
+                  fieldState: { error?: { message?: string } };
+                }) => (
+                  <div className="w-full">
+                    <Label htmlFor="categoty" className="pb-1.5">
+                      Brand
+                    </Label>
+                    <Input placeholder="Enter brand" {...field} />
+                    {fieldState.error && (
+                      <p className="text-sm text-destructive mt-1">
+                        {fieldState.error.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
+            </div>
+            <div className="flex flex-col md:flex-row gap-5">
+              {/* Price */}
+              <Controller
+                control={form.control}
+                name="price"
+                render={({
+                  field,
+                  fieldState,
+                }: {
+                  field: ControllerRenderProps<ProductFormValues, "price">;
+                  fieldState: { error?: { message?: string } };
+                }) => (
+                  <div className="w-full">
+                    <Label htmlFor="categoty" className="pb-1.5">
+                      Price
+                    </Label>
+                    <Input placeholder="Enter product price" {...field} />
+                    {fieldState.error && (
+                      <p className="text-sm text-destructive mt-1">
+                        {fieldState.error.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
+              {/* Stock */}
+              <Controller
+                control={form.control}
+                name="stock"
+                render={({
+                  field,
+                  fieldState,
+                }: {
+                  field: ControllerRenderProps<ProductFormValues, "stock">;
+                  fieldState: { error?: { message?: string } };
+                }) => (
+                  <div className="w-full">
+                    <Label htmlFor="categoty" className="pb-1.5">
+                      Stock
+                    </Label>
+                    <Input placeholder="Enter stock" {...field} />
+                    {fieldState.error && (
+                      <p className="text-sm text-destructive mt-1">
+                        {fieldState.error.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
+            </div>
+            <div className="upload-flex flex flex-col md:flex-row gap-5">
+              {/* Images */}
+            </div>
+            <div className="upload-field">{/* isFeatured */}</div>
+            <div>
+              {/* Description */}
+              <Controller
+                control={form.control}
+                name="description"
+                render={({
+                  field,
+                  fieldState,
+                }: {
+                  field: ControllerRenderProps<
+                    ProductFormValues,
+                    "description"
+                  >;
+                  fieldState: { error?: { message?: string } };
+                }) => (
+                  <div className="w-full">
+                    <Label htmlFor="categoty" className="pb-1.5">
+                      Description
+                    </Label>
+                    <Textarea
+                      className="resize-none h-35"
+                      placeholder="Enter product description"
+                      {...field}
+                    />
+                    {fieldState.error && (
+                      <p className="text-sm text-destructive mt-1">
+                        {fieldState.error.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
+            </div>
+            <div>
+              {/* Submit */}
+              <Button type="submit">
+                {form.formState.isSubmitted ? "submitting" : `${type} Product`}
+              </Button>
+            </div>
+          </form>
+        </CardContent>
       </Card>
     </FormProvider>
   );
