@@ -10,6 +10,7 @@ import {
   FormProvider,
   SubmitHandler,
   useForm,
+  useWatch,
   type Resolver,
 } from "react-hook-form";
 import z from "zod";
@@ -83,7 +84,12 @@ const ProductForm = ({
     }
   };
 
-  const images = form.watch("images");
+  const images = useWatch({
+    control: form.control,
+    name: "images",
+    defaultValue: [],
+  });
+
 
   return (
     <FormProvider {...form}>
