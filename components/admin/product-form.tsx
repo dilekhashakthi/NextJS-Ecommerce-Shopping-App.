@@ -26,6 +26,7 @@ import { useRouter } from "next/navigation";
 import { UploadButton } from "@uploadthing/react";
 import type { OurFileRouter } from "@/app/api/uploadthing/core";
 import Image from "next/image";
+import { Checkbox } from "../ui/checkbox";
 
 type ProductFormValues =
   | z.infer<typeof insertProductSchema>
@@ -88,6 +89,16 @@ const ProductForm = ({
     control: form.control,
     name: "images",
     defaultValue: [],
+  });
+  const isFeatured = useWatch({
+    control: form.control,
+    name: "isFeatured",
+    defaultValue: false,
+  });
+  const banner = useWatch({
+    control: form.control,
+    name: "banner",
+    defaultValue: "",
   });
 
   return (
@@ -309,7 +320,62 @@ const ProductForm = ({
                 )}
               />
             </div>
-            <div className="upload-field">{/* isFeatured */}</div>
+            <div className="upload-field">
+              {/* isFeatured */}
+              <Controller
+                control={form.control}
+                name="isFeatured"
+                render={({
+                  field,
+                  fieldState,
+                }: {
+                  field: ControllerRenderProps<ProductFormValues, "isFeatured">;
+                  fieldState: { error?: { message?: string } };
+                }) => (
+                  <div className="upload-flex flex flex-col ">
+                    <div className="space-x-2 flex items-center">
+                      <Checkbox
+                        checked={field.value}
+                        className="relative mb-1"
+                        onCheckedChange={field.onChange}
+                      />
+                      <Label htmlFor="categoty" className="pb-1.5">
+                        Feature Product
+                      </Label>
+                    </div>
+                    <div
+                      className={`${isFeatured ? "border h-auto  mt-1 p-3" : "border-none "} rounded-sm w-full`}
+                    >
+                      {isFeatured && banner && (
+                        <Image
+                          src={banner}
+                          alt="banner image"
+                          className="w-full object-cover object-center rounded-sm"
+                          width={1920}
+                          height={680}
+                        />
+                      )}
+                      {isFeatured && !banner && (
+                        <UploadButton<OurFileRouter, "imageUploader">
+                          endpoint="imageUploader"
+                          onClientUploadComplete={(res: { url: string }[]) => {
+                            form.setValue("banner", res[0].url);
+                          }}
+                          onUploadError={(error: Error) => {
+                            toast.error(`ERROR! ${error.message}`);
+                          }}
+                        />
+                      )}
+                    </div>
+                    {fieldState.error && (
+                      <p className="text-sm text-destructive mt-1">
+                        {fieldState.error.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
+            </div>
             <div>
               {/* Description */}
               <Controller
@@ -346,7 +412,9 @@ const ProductForm = ({
             <div>
               {/* Submit */}
               <Button type="submit">
-                {form.formState.isSubmitted ? "submitting" : `${type} Product`}
+                {form.formState.isSubmitting
+                  ? "Submitting..."
+                  : `${type} Product`}
               </Button>
             </div>
           </form>
