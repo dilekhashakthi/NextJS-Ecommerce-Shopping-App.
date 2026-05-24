@@ -23,6 +23,7 @@ import { createProduct, updateProduct } from "@/lib/actions/product.actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { UploadButton } from "@uploadthing/react";
+import type { OurFileRouter } from "@/app/api/uploadthing/core";
 import Image from "next/image";
 
 type ProductFormValues =
@@ -282,13 +283,13 @@ const ProductForm = ({
                         height={100}
                       />
                     ))}
-                    <UploadButton
+                    <UploadButton <OurFileRouter, "imageUploader">
                       endpoint="imageUploader"
                       onClientUploadComplete={(res: { url: string }[]) => {
                         form.setValue("images", [...images, res[0].url]);
                       }}
-                      onUploadError={(error:Error) => {
-                        toast.error(`ERROR! ${error.message}`)
+                      onUploadError={(error: Error) => {
+                        toast.error(`ERROR! ${error.message}`);
                       }}
                     />
                     {fieldState.error && (
