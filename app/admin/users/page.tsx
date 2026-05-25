@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getAllUsers } from "@/lib/actions/user.actions";
+import { deleteUser, getAllUsers } from "@/lib/actions/user.actions";
 import { requireAdmin } from "@/lib/auth-guard";
 import { formatId } from "@/lib/utils";
 import Link from "next/link";
@@ -60,7 +60,7 @@ const AdminUserPage = async (props: {
                       <span className="px-2">Details</span>
                     </Link>
                   </Button>
-                  {/* <DeleteDialog id={user.id} action={deleteUser} /> */}
+                  <DeleteDialog id={user.id} action={deleteUser} />
                 </TableCell>
               </TableRow>
             ))}
