@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { updateUser } from "@/lib/actions/user.actions";
 import { USER_ROLES } from "@/lib/constants";
 import { updateUserSchema } from "@/lib/validators";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,6 +22,7 @@ import {
   FormProvider,
   useForm,
 } from "react-hook-form";
+import { toast } from "sonner";
 import z from "zod";
 
 type UserFormValues = z.infer<typeof updateUserSchema>;
@@ -37,13 +39,34 @@ const UpdateUserForm = ({
     defaultValues: user,
   });
 
+  const onSubmit = async (values: z.infer<typeof updateUserSchema>) => {
+    try {
+      const res = await updateUser({
+        ...values,
+        id: user.id,
+      });
+
+      if (!res.success) {
+        toast.error(res.message);
+      }
+
+      toast(res.message);
+
+      form.reset();
+
+      router.push("/admin/users");
+    } catch (error) {
+      toast((error as Error).message);
+    }
+  };
+
   return (
     <FormProvider {...form}>
       <Card>
         <CardContent>
           <form
             method="POST"
-            // onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-8"
           >
             {/* Email */}
