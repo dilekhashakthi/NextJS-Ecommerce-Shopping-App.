@@ -20,13 +20,38 @@ const SearchPage = async (props: {
     page = "1",
   } = await props.searchParams;
 
+  // Construct filter url
+  const getFilterUrl = ({
+    c,
+    s,
+    p,
+    r,
+    pg,
+  }: {
+    c?: string;
+    s?: string;
+    p?: string;
+    r?: string;
+    pg?: string;
+  }) => {
+    const params = { query, category, price, rating, sort, page };
+
+    if (c) params.category = c;
+    if (p) params.price = p;
+    if (s) params.sort = s;
+    if (r) params.rating = r;
+    if (pg) params.page = pg;
+    
+    return `/search?${new URLSearchParams(params)}`;
+  };
+
   const products = await getAllProducts({
     query,
     category,
     price,
     rating,
     sort,
-    page : Number(page),
+    page: Number(page),
   });
   return (
     <div className="grid md:grid-cols-5 md:gap-5">
