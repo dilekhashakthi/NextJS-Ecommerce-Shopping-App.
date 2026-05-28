@@ -4,13 +4,15 @@ import { APP_NAME } from "@/lib/constants";
 import LOGO from "@/public/images/logo.svg"
 import Menu from "./menu";
 import UserButton from "./user-button";
+import CategotyDrawer from "./category-drawer";
 
 const Header = () => {
   return (
     <header className="w-full border-b">
       <div className="wrapper flex-between">
         <div className="flex-start">
-          <Link href="/" className="flex-start">
+          <CategotyDrawer />
+          <Link href="/" className="flex-start ml-4">
             <Image
               src={LOGO}
               alt={`${APP_NAME} logo`}
