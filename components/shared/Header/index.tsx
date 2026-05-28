@@ -1,10 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { APP_NAME } from "@/lib/constants";
-import LOGO from "@/public/images/logo.svg"
+import LOGO from "@/public/images/logo.svg";
 import Menu from "./menu";
 import UserButton from "./user-button";
 import CategotyDrawer from "./category-drawer";
+import Search from "./search";
 
 const Header = () => {
   return (
@@ -24,6 +25,9 @@ const Header = () => {
               {APP_NAME}
             </span>
           </Link>
+        </div>
+        <div className="hedden md:block">
+          <Search />
         </div>
         <Menu userButton={<UserButton />} />
       </div>
