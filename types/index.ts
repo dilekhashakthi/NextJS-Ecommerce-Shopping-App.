@@ -34,5 +34,5 @@ export type PaymentResult = z.infer<typeof paymentResultSchema>
 export type Review = z.infer<typeof insertReviewSchema> & {
   id: string;
   createdAt: Date;
-  user?: { name: string };
+  user?: { name: string | null };
 };
