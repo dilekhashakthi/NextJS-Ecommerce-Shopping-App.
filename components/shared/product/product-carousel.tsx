@@ -1,4 +1,4 @@
-"use clent";
+"use client";
 
 import {
   Carousel,
@@ -24,12 +24,12 @@ const ProductCarousel = ({ data }: { data: Product[] }) => {
       ]}
     >
       <CarouselContent>
-        {data.map((product: Product) => (
+        {data.filter((product: Product) => product.banner).map((product: Product) => (
           <CarouselItem key={product.id}>
             <Link href={`/product/${product.slug}`}>
               <div className="relative mx-auto">
                 <Image
-                  src={product.banner!}
+                  src={`/images/${product.banner}`}
                   alt={product.name}
                   height="0"
                   width="0"
