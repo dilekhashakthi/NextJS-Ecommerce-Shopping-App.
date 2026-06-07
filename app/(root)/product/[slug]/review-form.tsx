@@ -24,9 +24,15 @@ import { insertReviewSchema } from "@/lib/validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { StarIcon } from "lucide-react";
 import { useState } from "react";
-import { Controller, type Resolver, useForm } from "react-hook-form";
+import {
+  Controller,
+  type Resolver,
+  SubmitHandler,
+  useForm,
+} from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
+import { createUpdateReview } from "@/lib/actions/review.actions";
 
 type ReviewFormValues = z.output<typeof insertReviewSchema>;
 
@@ -46,20 +52,26 @@ const ReviewForm = ({
     defaultValues: reviewFormDefaultValues,
   });
 
+  // Open Form Handler
   const handleOpenForm = () => {
+    form.setValue("productId", productId);
+    form.setValue("userId", userId);
     setOpen(true);
   };
 
-  const onSubmit = async (data: ReviewFormValues) => {
-    try {
-      // handle submission logic here
-      toast.success("Review submitted!");
-      setOpen(false);
-      form.reset();
-      onReviewSubmitted?.();
-    } catch (error) {
-      toast.error("Failed to submit review.");
+  // Submit Form Handler
+  const onSubmit: SubmitHandler<z.infer<typeof insertReviewSchema>> = async (
+    values,
+  ) => {
+    const res = await createUpdateReview({ ...values, productId });
+
+    if (!res || !res.success) {
+      return toast.error(res?.message || "Failed to submit review");
     }
+
+    setOpen(false);
+    onReviewSubmitted?.();
+    toast(res.message);
   };
 
   return (
@@ -67,7 +79,7 @@ const ReviewForm = ({
       <Button onClick={handleOpenForm} variant="default">
         Write a Review
       </Button>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-100.25">
         <DialogHeader>
           <DialogTitle>Write a Review</DialogTitle>
           <DialogDescription>
@@ -75,7 +87,7 @@ const ReviewForm = ({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form method="post" onSubmit={form.handleSubmit(onSubmit)}>
           <Card>
             <CardContent className="grid gap-4 py-4">
               {/* Title */}
